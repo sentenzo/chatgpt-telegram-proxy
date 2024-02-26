@@ -9,7 +9,7 @@ __pycache__
 
 TODO.*
 
-telethon_sessions/*
+.telethon_sessions/*
 
 
 !.gitkeep

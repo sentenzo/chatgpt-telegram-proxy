@@ -7,7 +7,7 @@ TOKEN = os.environ.get("TELEGRAM_BOT_API_TOKEN", default="")
 API_ID = int(os.environ.get("TELEGRAM_APP_API_ID", default="0"))
 API_HASH = os.environ.get("TELEGRAM_APP_API_HASH", default="")
 
-bot = TelegramClient("telethon_sessions/bot", API_ID, API_HASH)
+bot = TelegramClient(".telethon_sessions/bot", API_ID, API_HASH)
 bot.start(bot_token=TOKEN)
 
 
