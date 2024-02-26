@@ -1,7 +1,7 @@
 PACKAGE_NAME = chatgpt-telegram-proxy
-PROJECT_DIR = 
+PROJECT_DIR = oaiapi_teleproxy
 
-CODE = ${PROJECT_DIR} experiments tests
+CODE = ${PROJECT_DIR} tests
 
 # https://stackoverflow.com/a/4511164/2493536
 ifdef OS # Windows
