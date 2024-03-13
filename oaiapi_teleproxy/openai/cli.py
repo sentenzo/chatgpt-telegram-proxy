@@ -38,18 +38,23 @@ def run_cli() -> None:
                 messages=history,
                 temperature=0.7,
                 max_tokens=1000,
+                stream=True,
             )
-            bot_input = completion.choices[0].message.content
-            print(f"{BOT_CAPTION}{bot_input}")
+            bot_input: list[str] = []
+            print(BOT_CAPTION, end="")
+            for chunk in completion:
+                text = chunk.choices[0].delta.content or ""
+                print(text, end="", flush=True)
+                bot_input.append(text)
+            print()
             history.append(
                 {
                     "role": "assistant",
-                    "content": bot_input,
+                    "content": "".join(bot_input),
                 }
             )
             user_input = input(USER_CAPTION)
             history.append({"role": "user", "content": user_input})
-            # break
     except KeyboardInterrupt:
         return
 
