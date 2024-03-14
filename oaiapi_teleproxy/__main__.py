@@ -1,7 +1,10 @@
 # from oaiapi_teleproxy.telegram.bot import launch_telegram_bot  # noqa: F401
 # from oaiapi_teleproxy.openai.check import check_openai  # noqa: F401
-from oaiapi_teleproxy.openai.cli import run_cli  # noqa: F401
+# from oaiapi_teleproxy.openai.cli import run_cli  # noqa: F401
+from .bot_with_openai import main  # noqa: F401
 
 # check_openai()
 # launch_telegram_bot()
-run_cli()
+# run_cli()
+
+main()
