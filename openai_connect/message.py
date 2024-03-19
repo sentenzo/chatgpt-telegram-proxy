@@ -18,7 +18,7 @@ class MessageType(str, Enum):
 
 class JsonBijectable(ABC):
     @abstractmethod
-    def to_json() -> str:
+    def to_json(self) -> str:
         pass
 
     @staticmethod

@@ -1,3 +1,3 @@
 class Bot:
-    async def launch(self):
+    async def launch(self) -> None:
         pass
