@@ -1,0 +1,2 @@
+class OpenAiConnectException(Exception):
+    pass
