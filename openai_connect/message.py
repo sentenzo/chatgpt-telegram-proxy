@@ -13,6 +13,7 @@ class MessageParsingError(OpenAiConnectException):
 class MessageType(str, Enum):
     INCOMING = "incoming"
     OUTGOING = "outgoing"
+    OUTGOING_APPEND = "outgoing_append"
     UNKNOWN = "unknown"
 
 
