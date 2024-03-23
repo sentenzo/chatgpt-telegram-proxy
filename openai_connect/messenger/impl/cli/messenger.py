@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 
 from openai_connect.message import Message, MessageType
 from openai_connect.messenger import Messenger
@@ -15,7 +16,8 @@ class CliMessenger(Messenger):
         input_text = await asyncio.to_thread(input, "[User]: ")
         self.message_counter += 1
         return Message(
-            type_=MessageType.INCOMING,
+            created_at=int(datetime.now().timestamp()),
+            message_type=MessageType.INCOMING,
             chat_id=CHAT_ID,
             user_id=USER_ID,
             message_id=str(self.message_counter),

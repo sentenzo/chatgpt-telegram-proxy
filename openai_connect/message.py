@@ -30,7 +30,8 @@ class JsonBijectable(ABC):
 
 @dataclass(frozen=True, slots=True)
 class Message(JsonBijectable):
-    type_: MessageType
+    created_at: int  # UNIX-time
+    message_type: MessageType
     chat_id: str
     user_id: str | None = None
     message_id: str | None = None
@@ -43,7 +44,8 @@ class Message(JsonBijectable):
     def from_json(json_str: str) -> "Message":
         try:
             obj = json.loads(json_str)
-            obj["type_"] = MessageType(obj["type_"])
+            obj["created_at"] = int(obj["created_at"])
+            obj["message_type"] = MessageType(obj["message_type"])
             return Message(**obj)
         except TypeError as e:
             raise MessageParsingError(

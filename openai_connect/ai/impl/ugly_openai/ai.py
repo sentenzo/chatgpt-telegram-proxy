@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from typing import AsyncGenerator
 
 from openai import AsyncOpenAI
@@ -54,6 +55,7 @@ class UglyOpenAi(Ai):
         text = completion.choices[0].message.content or ""
         self.history[key].append({"role": "assistant", "content": text})
         yield Message(
+            int(datetime.now().timestamp()),
             MessageType.OUTGOING,
             chat_id=message.chat_id,
             user_id=f"assistant-{message.chat_id}",

@@ -9,7 +9,8 @@ class Ai(ABC):
     async def reply(
         self, message: Message, stream: bool = False
     ) -> AsyncGenerator[Message, None]:
-        yield Message(MessageType.UNKNOWN, "whatever")
+        yield Message(0, MessageType.UNKNOWN, "whatever")
+        raise NotImplementedError()
 
     async def reply_as_list(
         self, message: Message, stream: bool = False

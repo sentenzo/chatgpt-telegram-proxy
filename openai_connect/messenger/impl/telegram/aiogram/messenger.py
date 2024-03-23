@@ -20,13 +20,19 @@ class AiogramMessenger(Messenger):
 
     @staticmethod
     def create_incoming_message(message_data: MessageData) -> Message:
+        created_at = int(message_data.date.timestamp())
         chat_id = str(message_data.chat.id)
         user = message_data.from_user
         user_id = None if user is None else str(user.id)
         message_id = str(message_data.message_id)
         message_text = message_data.text
         return Message(
-            MessageType.INCOMING, chat_id, user_id, message_id, message_text
+            created_at,
+            MessageType.INCOMING,
+            chat_id,
+            user_id,
+            message_id,
+            message_text,
         )
 
     async def receive_message(self) -> Message:
