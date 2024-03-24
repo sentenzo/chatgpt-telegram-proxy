@@ -1,5 +1,6 @@
 import json
 from dataclasses import FrozenInstanceError, asdict
+from typing import Any
 
 import pytest
 
@@ -59,6 +60,14 @@ INCORRECT_MESSAGE_PARAMETERS: dict[str, list] = {
 }
 
 
+def update_message(
+    old_message: Message, new_kwargs: dict[str, Any]
+) -> Message:
+    kwargs = asdict(old_message)
+    kwargs.update(**new_kwargs)
+    return Message(**kwargs)
+
+
 def test_init() -> None:
     for message_kwarg in CORRECT_MESSAGE_KWARGS:
         Message(**message_kwarg)
@@ -107,3 +116,24 @@ def test_json_incorrect_serialization() -> None:
         message_kwarg_incorrect["created_at"] = "2345-12-21"
         json_string_incorrect = json.dumps(message_kwarg_incorrect)
         Message.from_json(json_string_incorrect)
+
+
+def test_ordering() -> None:
+    message_1, message_2, message_3 = [
+        Message(**kwarg) for kwarg in CORRECT_MESSAGE_KWARGS[:3]
+    ]
+    message_1 = update_message(message_1, {"created_at": -14})
+    message_2 = update_message(message_2, {"created_at": 8})
+    message_3 = update_message(message_3, {"created_at": 42})
+    assert message_1 < message_2 < message_3
+    assert message_1 <= message_2 <= message_3
+    assert message_3 > message_2 > message_1
+    assert message_3 >= message_2 >= message_1
+
+    message_1 = update_message(message_1, {"created_at": 8})
+    assert message_2 < message_1 < message_3
+
+    message_1 = update_message(message_1, asdict(message_2))
+    assert message_1 <= message_2
+    assert message_1 >= message_2
+    assert message_1 == message_2
