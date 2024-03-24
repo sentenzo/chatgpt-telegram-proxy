@@ -30,7 +30,7 @@ class JsonBijectable(ABC):
 
 @dataclass(frozen=True, slots=True)
 class Message(JsonBijectable):
-    created_at: int  # UNIX-time
+    created_at: int  # UNIX time
     message_type: MessageType
     chat_id: str
     user_id: str | None = None
@@ -47,7 +47,7 @@ class Message(JsonBijectable):
             obj["created_at"] = int(obj["created_at"])
             obj["message_type"] = MessageType(obj["message_type"])
             return Message(**obj)
-        except TypeError as e:
+        except (TypeError, ValueError) as e:
             raise MessageParsingError(
                 "Failed to create Message object from JSON"
             ) from e
