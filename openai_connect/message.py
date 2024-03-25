@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
 from enum import Enum
 from functools import total_ordering
+from typing import Any
 
 from openai_connect.exception import OpenAiConnectException
 
@@ -55,12 +56,15 @@ class Message(JsonBijectable):
             ) from e
 
     def _sorting_key(self) -> tuple:
+        def none_tuple(x: Any) -> tuple[bool, Any]:
+            return (x is None, x)
+
         return (
             self.created_at,
             self.chat_id,
-            self.message_id,
-            self.user_id,
-            self.message_text,
+            none_tuple(self.message_id),
+            none_tuple(self.user_id),
+            none_tuple(self.message_text),
             self.message_type,
         )
 
