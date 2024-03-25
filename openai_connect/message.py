@@ -57,7 +57,7 @@ class Message(JsonBijectable):
 
     def _sorting_key(self) -> tuple:
         def none_tuple(x: Any) -> tuple[bool, Any]:
-            return (x is None, x)
+            return (x is not None, x)
 
         return (
             self.created_at,
