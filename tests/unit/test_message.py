@@ -4,60 +4,9 @@ from typing import Any
 
 import pytest
 
-from openai_connect.message import Message, MessageParsingError, MessageType
+from openai_connect.message import Message, MessageParsingError
 
-CORRECT_MESSAGE_PARAMETERS: dict[str, list] = {
-    "created_at": [
-        1600171844,
-        -123,
-        0,
-    ],
-    "message_type": [
-        MessageType.INCOMING,
-        MessageType.OUTGOING,
-        MessageType.OUTGOING_APPEND,
-        MessageType.UNKNOWN,
-    ],
-    "chat_id": ["-0qwerty", ""],
-    "user_id": ["-0qwerty", "", None],
-    "message_id": ["-0qwerty", "", None],
-    "message_text": ["text '\"}{</div> ; -- DELETE TABLE Students;", "", None],
-}
-
-CORRECT_MESSAGE_KWARGS = [
-    {
-        "created_at": created_at,
-        "message_type": message_type,
-        "chat_id": chat_id,
-        "user_id": user_id,
-        "message_id": message_id,
-        "message_text": message_text,
-    }
-    for created_at in CORRECT_MESSAGE_PARAMETERS["created_at"]
-    for message_type in CORRECT_MESSAGE_PARAMETERS["message_type"]
-    for chat_id in CORRECT_MESSAGE_PARAMETERS["chat_id"]
-    for user_id in CORRECT_MESSAGE_PARAMETERS["user_id"]
-    for message_id in CORRECT_MESSAGE_PARAMETERS["message_id"]
-    for message_text in CORRECT_MESSAGE_PARAMETERS["message_text"]
-]  # 3*4*2*3*3*3 == 648 variants
-
-INCORRECT_MESSAGE_PARAMETERS: dict[str, list] = {
-    "created_at": [
-        None,
-        "12",
-        1600171844.0,
-    ],
-    "message_type": [
-        MessageType.INCOMING,
-        MessageType.OUTGOING,
-        MessageType.OUTGOING_APPEND,
-        MessageType.UNKNOWN,
-    ],
-    "chat_id": ["-0qwerty", ""],
-    "user_id": ["-0qwerty", "", None],
-    "message_id": ["-0qwerty", "", None],
-    "message_text": ["text '\"}{</div> ; -- DELETE TABLE Students;", "", None],
-}
+from .const import CORRECT_MESSAGE_KWARGS, MESSAGES
 
 
 def update_message(
@@ -83,7 +32,7 @@ def test_init_no_optionals() -> None:
 
 
 def test_immutability() -> None:
-    message = Message(**CORRECT_MESSAGE_KWARGS[0])
+    message = MESSAGES[0]
 
     with pytest.raises(TypeError):
         message.some_new_attr = 123  # type: ignore
@@ -93,15 +42,14 @@ def test_immutability() -> None:
 
 
 def test_json_serialization() -> None:
-    for message_kwarg in CORRECT_MESSAGE_KWARGS:
-        message_before = Message(**message_kwarg)
+    for message_before in MESSAGES:
         json_string = message_before.to_json()
         message_after = Message.from_json(json_string)
         assert message_before == message_after
 
 
 def test_json_incorrect_serialization() -> None:
-    message = Message(**CORRECT_MESSAGE_KWARGS[0])
+    message = MESSAGES[0]
     message_kwarg = asdict(message)
     assert json.dumps(message_kwarg) == message.to_json()
 
@@ -119,9 +67,7 @@ def test_json_incorrect_serialization() -> None:
 
 
 def test_ordering() -> None:
-    message_1, message_2, message_3 = [
-        Message(**kwarg) for kwarg in CORRECT_MESSAGE_KWARGS[:3]
-    ]
+    message_1, message_2, message_3 = MESSAGES[:3]
     message_1 = update_message(message_1, {"created_at": -14})
     message_2 = update_message(message_2, {"created_at": 8})
     message_3 = update_message(message_3, {"created_at": 42})
@@ -137,3 +83,9 @@ def test_ordering() -> None:
     assert message_1 <= message_2
     assert message_1 >= message_2
     assert message_1 == message_2
+
+
+def test_sorting() -> None:
+    messages = sorted(MESSAGES)
+    for message in messages:
+        assert message in MESSAGES
