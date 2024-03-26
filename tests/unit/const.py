@@ -1,5 +1,7 @@
 from openai_connect.message import Message, MessageType
 
+AWAIT_TIMEOUT = 0.1
+
 CORRECT_MESSAGE_PARAMETERS: dict[str, list] = {
     "created_at": [
         1600171844,
@@ -15,7 +17,11 @@ CORRECT_MESSAGE_PARAMETERS: dict[str, list] = {
     "chat_id": ["-0qwerty", ""],
     "user_id": ["-0qwerty", "", None],
     "message_id": ["-0qwerty", "", None],
-    "message_text": ["text '\"}{</div> ; -- DELETE TABLE Students;", "", None],
+    "message_text": [
+        "text '\"}{</div> */ ; -- DELETE TABLE Students;",
+        "",
+        None,
+    ],
 }
 
 CORRECT_MESSAGE_KWARGS = [
