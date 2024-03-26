@@ -10,11 +10,11 @@ def test_init() -> None:
     CliMessenger()
 
 
-async def test_send_message(capfd: CaptureFixture[str]) -> None:
+async def test_send_message(capsys: CaptureFixture[str]) -> None:
     msgr = CliMessenger()
     message = MESSAGES[0]
     await asyncio.wait_for(msgr.send_message(message), AWAIT_TIMEOUT)
-    stdout, stderr = capfd.readouterr()
+    stdout, stderr = capsys.readouterr()
     assert stdout == f"[AI]: {message.message_text}\n"
     assert stderr == ""
 
