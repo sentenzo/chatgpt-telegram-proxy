@@ -1,5 +1,5 @@
 import asyncio
-from typing import Awaitable
+from typing import Callable, Coroutine
 
 from openai_connect.ai import Ai
 from openai_connect.messenger import Messenger
@@ -38,21 +38,28 @@ class Bot:
         new_response = await self.mq_ai.get()
         await self.messenger.send_message(new_response)
 
-    async def _repeat_until_bot_stopped(self, awaitable: Awaitable) -> None:
+    async def _repeat_until_bot_stopped(
+        self, coroutine: Callable[[], Coroutine]
+    ) -> None:
+        task = None
         while True:
             if self.stop_event.is_set():
                 break
-            await asyncio.wait_for(awaitable, TIMEOUT)
+            if task is None:
+                task = asyncio.create_task(coroutine())
+            done, _ = await asyncio.wait([task], timeout=TIMEOUT)
+            if done:
+                task = None
 
     async def launch(self) -> None:
         task_1 = self._repeat_until_bot_stopped(
-            self._receive_next_request_from_user()
+            self._receive_next_request_from_user
         )
         task_2 = self._repeat_until_bot_stopped(
-            self._generate_next_response_from_ai()
+            self._generate_next_response_from_ai
         )
         task_3 = self._repeat_until_bot_stopped(
-            self._send_next_response_to_user()
+            self._send_next_response_to_user
         )
         await asyncio.gather(task_1, task_2, task_3)
 
